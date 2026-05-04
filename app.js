@@ -18,15 +18,20 @@ const dbConfig = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT || 3306,
-    ssl: {
-        rejectUnauthorized: false
-    }
 };
 
 async function startApp() {
     await initDatabase(dbConfig);
 
-    const pool = mysql.createPool(dbConfig);
+    const pool = mysql.createPool({
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        socketPath: '/tmp/mysql.sock',
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
 
     app.get("/api/recommendations", async (req, res) => {
         const [rows] = await pool.query("SELECT * FROM recommendations ORDER BY created_at DESC");

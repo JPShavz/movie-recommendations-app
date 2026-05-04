@@ -5,10 +5,7 @@ async function initDatabase(config) {
         host: config.host,
         user: config.user,
         password: config.password,
-        port: config.port,
-        ssl: {
-            rejectUnauthorized: false
-        }
+        socketPath: '/tmp/mysql.sock',
     });
 
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${config.database}\`;`);
